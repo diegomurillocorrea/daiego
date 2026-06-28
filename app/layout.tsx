@@ -6,8 +6,9 @@ import './globals.css'
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
-  title: 'DAIEGO - Custom Software & Business Systems',
-  description: 'Build scalable, custom software solutions for your business. Receipts, streaming, finance platforms, and admin dashboards.',
+  title: 'DAIEGO — AI Business Operating System',
+  description:
+    'DAIEGO builds modular software, automation tools and AI-powered platforms to manage sales, inventory, employees, payments, subscriptions and digital operations.',
   generator: 'v0.app',
   icons: {
     icon: '/favicon.ico',

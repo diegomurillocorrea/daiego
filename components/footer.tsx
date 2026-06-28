@@ -12,8 +12,9 @@ export function Footer() {
             <h3 className="bg-linear-to-r from-primary to-accent/90 bg-clip-text text-2xl font-bold text-transparent">
               DAIEGO
             </h3>
+            <p className="text-sm font-medium text-foreground/70">AI Business Operating System</p>
             <p className="text-foreground/60 text-sm leading-relaxed">
-              Custom software solutions for modern businesses. Built to scale.
+              Modular software, automation tools and AI-powered platforms to operate and scale real businesses.
             </p>
             <div className="flex gap-3 pt-4">
               <a
@@ -26,14 +27,15 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Platform */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Product</h4>
+            <h4 className="font-semibold text-foreground">Platform</h4>
             <ul className="space-y-2">
               {[
-                { label: 'Receipts', href: '#' },
-                { label: 'Streaming', href: '#' },
-                { label: 'Finance', href: '#' },
+                { label: 'Platform', href: '#platform' },
+                { label: 'Apps', href: '#apps' },
+                { label: 'Ecosystems', href: '#ecosystems' },
+                { label: 'Studio', href: '#studio' },
               ].map((link) => (
                 <li key={link.label}>
                   <a
@@ -47,14 +49,15 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Apps */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Company</h4>
+            <h4 className="font-semibold text-foreground">Apps</h4>
             <ul className="space-y-2">
               {[
-                { label: 'About', href: '#' },
-                { label: 'Process', href: '#' },
-                { label: 'Contact', href: '#' },
+                { label: 'DAIEGO Store', href: '#apps' },
+                { label: 'DAIEGO Clofi', href: '#apps' },
+                { label: 'DAIEGO Receipts', href: '#apps' },
+                { label: 'DAIEGO Streaming', href: '#apps' },
               ].map((link) => (
                 <li key={link.label}>
                   <a
@@ -68,14 +71,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Ecosystems & Studio */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Resources</h4>
+            <h4 className="font-semibold text-foreground">Ecosystems</h4>
             <ul className="space-y-2">
               {[
-                { label: 'Solutions', href: '#' },
-                { label: 'Services', href: '#' },
-                { label: 'Pricing', href: '#' },
+                { label: 'DAIEGO Toys', href: '#ecosystems' },
+                { label: 'DAIEGO Studio', href: '#studio' },
+                { label: 'Contact', href: '#contact' },
               ].map((link) => (
                 <li key={link.label}>
                   <a

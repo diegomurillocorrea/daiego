@@ -1,106 +1,133 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { CreditCard, TrendingUp, DollarSign, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion'
+import {
+  Clock,
+  Landmark,
+  type LucideIcon,
+  MonitorPlay,
+  ReceiptText,
+  Store,
+} from 'lucide-react'
+import {
+  Card3D,
+  RevealHeading,
+  StaggerContainer,
+  StaggerItem,
+  useMotionSafe,
+} from '@/components/motion'
 
-const products = [
+interface App {
+  name: string
+  description: string
+  icon: LucideIcon
+  features: string[]
+  comingSoon?: boolean
+}
+
+const apps: App[] = [
   {
-    id: 1,
+    name: 'DAIEGO Store',
+    description: 'Inventory, POS, sales and branch management for retail businesses.',
+    icon: Store,
+    features: ['Inventory control', 'Point of sale', 'Sales tracking', 'Branch management'],
+  },
+  {
+    name: 'DAIEGO Clofi',
+    description: 'Employee attendance, time tracking and workforce management for store teams.',
+    icon: Clock,
+    features: ['Clock in / clock out', 'Worked hours', 'Attendance records', 'Team management'],
+  },
+  {
     name: 'DAIEGO Receipts',
-    description: 'Payment and receipt management system',
-    icon: CreditCard,
-    features: ['Client Management', 'Service Tracking', 'Payment Methods', 'Daily Control', 'Payment History'],
-    color: 'from-primary/20 to-primary/5',
+    description: 'Payments, receipts and service management for daily business operations.',
+    icon: ReceiptText,
+    features: ['Payment processing', 'Receipt management', 'Client services', 'Daily control'],
   },
   {
-    id: 2,
     name: 'DAIEGO Streaming',
-    description: 'Streaming account administration platform',
-    icon: TrendingUp,
-    features: ['Account Management', 'Client Profiles', 'Subscription Control', 'Card Management', 'Email Integration'],
-    color: 'from-primary/20 to-primary/5',
+    description: 'Subscription, profile, renewal and customer management for digital services.',
+    icon: MonitorPlay,
+    features: ['Subscription control', 'Profile management', 'Renewals', 'Customer tracking'],
   },
-  {
-    id: 3,
-    name: 'DAIEGO Finance',
-    description: 'Savings and loans / finance platform',
-    icon: DollarSign,
-    features: ['Secure Access', 'Account Control', 'User Management', 'Finance Workflows', 'Risk Assessment'],
-    color: 'from-primary/20 to-primary/5',
-  },
-];
+]
+
+const upcomingApp: App = {
+  name: 'DAIEGO Finance',
+  description: 'Savings, loans and financial workflows—built on the DAIEGO platform.',
+  icon: Landmark,
+  features: ['Account control', 'Finance workflows', 'Risk assessment'],
+  comingSoon: true,
+}
+
+function AppCard({ app, index }: { app: App; index: number }) {
+  const Icon = app.icon
+  const reduceMotion = useMotionSafe()
+
+  return (
+    <Card3D delay={index * 0.08} glowColor={index % 2 === 0 ? 'primary' : 'accent'}>
+      <div className="flex h-full flex-col p-7">
+        <motion.div
+          className="mb-5 inline-flex w-fit rounded-xl bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary/20"
+          whileHover={reduceMotion ? undefined : { rotate: [0, -4, 4, 0], scale: 1.05 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Icon size={24} aria-hidden />
+        </motion.div>
+        <h3 className="text-xl font-bold text-foreground">{app.name}</h3>
+        <p className="mt-2 text-sm text-foreground/60">{app.description}</p>
+        <div className="mt-6 space-y-2.5">
+          {app.features.map((feature, idx) => (
+            <div key={feature} className="flex items-center gap-2.5">
+              <div
+                className={`h-1.5 w-1.5 shrink-0 rounded-full ${idx % 2 === 0 ? 'bg-primary' : 'bg-accent/80'}`}
+              />
+              <span className="text-sm text-foreground/70">{feature}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Card3D>
+  )
+}
 
 export function Products() {
   return (
-    <section id="products" className="py-20 bg-background border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="section-heading-ruby-line text-4xl lg:text-5xl font-bold text-foreground">
-            Featured Products
-          </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
-            Our suite of integrated solutions designed to power modern business operations
-          </p>
+    <section id="apps" className="border-t border-border bg-secondary py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
+          <RevealHeading
+            title="The DAIEGO Ecosystem"
+            subtitle="Modular apps inside DAIEGO—each one a real software product, connected by the same platform and AI."
+          />
         </div>
 
-        {/* Product Cards Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {products.map((product) => {
-            const Icon = product.icon;
-            return (
-              <div
-                key={product.id}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-secondary p-8 transition-all duration-300 hover:border-primary/45 hover:shadow-[0_12px_40px_-12px_rgba(0,188,125,0.1),0_8px_32px_-14px_rgba(204,52,49,0.07)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-linear-to-r before:from-transparent before:via-accent/30 before:to-transparent"
-              >
-                {/* Product Header */}
-                <div className="mb-6 space-y-4">
-                  <div className="inline-flex p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary/20 transition-colors">
-                    <Icon size={24} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground">{product.name}</h3>
-                  <p className="text-foreground/60">{product.description}</p>
+        <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {apps.map((app, i) => (
+            <StaggerItem key={app.name}>
+              <AppCard app={app} index={i} />
+            </StaggerItem>
+          ))}
+          <StaggerItem className="col-span-full">
+            <div className="flex flex-col items-start gap-4 rounded-2xl border border-dashed border-border bg-background/40 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="inline-flex rounded-xl bg-secondary p-3 text-foreground/50">
+                  <upcomingApp.icon size={22} aria-hidden />
                 </div>
-
-                {/* Features */}
-                <div className="mb-8 space-y-3 flex-grow">
-                  {product.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <div
-                        className={`h-1.5 w-1.5 rounded-full ${idx % 2 === 0 ? 'bg-primary' : 'bg-accent/80'}`}
-                      />
-                      <span className="text-foreground/70 text-sm">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* UI Preview Area */}
-                <div className="mb-8 h-32 bg-background border border-border/50 rounded-xl p-4 flex items-center justify-center overflow-hidden relative">
-                  <div className="absolute inset-0 opacity-30 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-16 h-16 bg-primary/20 rounded-full blur-2xl"></div>
-                    <div className="absolute bottom-0 right-0 h-12 w-12 rounded-full bg-accent/15 blur-xl" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-foreground/80">{upcomingApp.name}</h3>
+                    <span className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent/90">
+                      Coming soon
+                    </span>
                   </div>
-                  <div className="relative z-10 w-full space-y-2">
-                    <div className="h-2 bg-primary/20 rounded w-3/4"></div>
-                    <div className="h-2 bg-primary/10 rounded w-1/2"></div>
-                    <div className="flex gap-2">
-                      <div className="h-2 bg-primary/20 rounded w-1/3 flex-grow"></div>
-                      <div className="h-2 bg-primary/10 rounded w-1/3 flex-grow"></div>
-                    </div>
-                  </div>
+                  <p className="mt-1 text-sm text-foreground/50">{upcomingApp.description}</p>
                 </div>
-
-                {/* CTA Button */}
-                <Button
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl h-11"
-                >
-                  Learn More <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          </StaggerItem>
+        </StaggerContainer>
       </div>
     </section>
-  );
+  )
 }

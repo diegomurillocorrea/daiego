@@ -1,164 +1,236 @@
-'use client';
+'use client'
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
+import { FadeIn, RevealHeading, useMotionSafe } from '@/components/motion'
+import { easeOutExpo, viewport } from '@/lib/motion'
 
-export function Showcase() {
-  // Generate consistent random data using seed-based approach
-  const randomDataPoints = useMemo(() => {
-    return [...Array(4)].map((_, i) => {
-      const seed = i * 0.234567;
-      const random = Math.sin(seed) * 10000 - Math.floor(Math.sin(seed) * 10000);
-      return random * 60 + 40;
-    });
-  }, []);
+function useCountUp(target: number, duration = 1.2, enabled = true) {
+  const [value, setValue] = useState(0)
 
-  const randomPercentages = useMemo(() => {
-    return [...Array(4)].map((_, i) => {
-      const seed = (i + 10) * 0.234567;
-      const random = Math.sin(seed) * 10000 - Math.floor(Math.sin(seed) * 10000);
-      return Math.round(random * 100);
-    });
-  }, []);
+  useEffect(() => {
+    if (!enabled) {
+      setValue(target)
+      return
+    }
+    let start = 0
+    const startTime = performance.now()
+    const tick = (now: number) => {
+      const progress = Math.min((now - startTime) / (duration * 1000), 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setValue(Math.round(start + (target - start) * eased))
+      if (progress < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }, [target, duration, enabled])
+
+  return value
+}
+
+function AnimatedMetric({
+  label,
+  value,
+  suffix = '',
+  prefix = '',
+  delay = 0,
+}: {
+  label: string
+  value: number
+  suffix?: string
+  prefix?: string
+  delay?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-50px' })
+  const reduceMotion = useMotionSafe()
+  const display = useCountUp(value, 1.2, isInView && !reduceMotion)
 
   return (
-    <section className="py-20 bg-secondary border-t border-border relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 opacity-40">
+    <motion.div
+      ref={ref}
+      className="rounded-2xl border border-border bg-secondary p-4 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={viewport}
+      transition={{ delay, duration: 0.5, ease: easeOutExpo }}
+    >
+      <p className="mb-2 text-xs text-foreground/50">{label}</p>
+      <p className="text-2xl font-bold tabular-nums text-primary">
+        {prefix}
+        {isInView ? display.toLocaleString() : '0'}
+        {suffix}
+      </p>
+    </motion.div>
+  )
+}
+
+export function Showcase() {
+  const reduceMotion = useMotionSafe()
+
+  const barData = useMemo(
+    () => [
+      { width: 78, color: '#00BC7D' },
+      { width: 62, color: '#CC3431' },
+      { width: 91, color: '#00BC7D' },
+      { width: 55, color: '#CC3431' },
+    ],
+    [],
+  )
+
+  const tableRows = useMemo(
+    () => [
+      { id: 'TX-1042', type: 'Sale', amount: '$248.00' },
+      { id: 'TX-1043', type: 'Inventory', amount: '-12 units' },
+      { id: 'TX-1044', type: 'Subscription', amount: '$19.99' },
+    ],
+    [],
+  )
+
+  return (
+    <section className="relative overflow-hidden border-t border-border bg-secondary py-20">
+      <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>
         <div className="absolute top-1/4 right-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute bottom-1/4 left-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute top-1/2 left-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/[0.09] blur-3xl" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="section-heading-ruby-line text-4xl font-bold text-foreground lg:text-5xl">
-            Built for Real Operations
-          </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
-            Visual systems powered by enterprise-grade architecture
-          </p>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
+          <RevealHeading
+            title="One platform. Multiple modules."
+            subtitle="Sales, operations, customers and data—connected in a single modular interface and powered by AI."
+          />
         </div>
 
-        {/* Large Visual Showcase */}
-        <div className="rounded-3xl border border-border bg-background p-8 shadow-[inset_0_1px_0_0_rgba(204,52,49,0.1)] lg:p-12">
-          <div className="grid lg:grid-cols-3 gap-6 mb-6">
-            {/* Left Column - Admin Panel */}
-            <div className="space-y-6">
-              {/* Top Admin Card */}
-              <div className="bg-secondary border border-border rounded-2xl p-6 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground">Admin Panel</h4>
-                    <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-2 bg-primary/20 rounded w-full"></div>
-                    <div className="h-2 bg-primary/10 rounded w-5/6"></div>
-                    <div className="h-2 bg-primary/20 rounded w-4/6"></div>
-                  </div>
-                  <div className="pt-2 border-t border-border">
-                    <p className="text-xs text-foreground/50 mt-2">Last updated: 2 mins ago</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Metrics */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-secondary border border-border rounded-2xl p-4 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                  <p className="text-xs text-foreground/50 mb-2">Total Users</p>
-                  <p className="text-2xl font-bold text-primary">2,847</p>
-                </div>
-                <div className="bg-secondary border border-border rounded-2xl p-4 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                  <p className="text-xs text-foreground/50 mb-2">Active</p>
-                  <p className="text-2xl font-bold text-primary">1,294</p>
-                </div>
-              </div>
+        <FadeIn>
+          <div className="rounded-3xl border border-border bg-background p-8 shadow-[inset_0_1px_0_0_rgba(204,52,49,0.1)] lg:p-12">
+            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <AnimatedMetric label="Sales today" value={12847} prefix="$" delay={0} />
+              <AnimatedMetric label="Inventory alerts" value={3} delay={0.08} />
+              <AnimatedMetric label="Employees active" value={24} delay={0.16} />
+              <AnimatedMetric label="Subscriptions due" value={7} delay={0.24} />
+              <AnimatedMetric label="AI recommendations" value={5} delay={0.32} />
             </div>
 
-            {/* Center Column - Main Dashboard */}
-            <div className="space-y-6">
-              {/* Large Dashboard Card */}
-              <div className="bg-secondary border border-border rounded-2xl p-8 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 h-full">
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="space-y-6">
+                <motion.div
+                  className="rounded-2xl border border-border bg-secondary p-6"
+                  initial={reduceMotion ? false : { opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={viewport}
+                  transition={{ duration: 0.5, ease: easeOutExpo }}
+                >
+                  <div className="mb-4 flex items-center justify-between">
+                    <h4 className="font-semibold text-foreground">Admin Panel</h4>
+                    <motion.div
+                      className="h-3 w-3 rounded-full bg-primary"
+                      animate={reduceMotion ? undefined : { opacity: [1, 0.4, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    {[100, 83, 66].map((w, i) => (
+                      <motion.div
+                        key={i}
+                        className="h-2 rounded bg-primary/20"
+                        initial={reduceMotion ? false : { width: 0 }}
+                        whileInView={{ width: `${w}%` }}
+                        viewport={viewport}
+                        transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease: easeOutExpo }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <AnimatedMetric label="Total Users" value={2847} delay={0.2} />
+                  <AnimatedMetric label="Active" value={1294} delay={0.28} />
+                </div>
+              </div>
+
+              <motion.div
+                className="rounded-2xl border border-border bg-secondary p-8"
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewport}
+                transition={{ duration: 0.55, ease: easeOutExpo }}
+              >
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <p className="text-xs text-foreground/50">Dashboard</p>
                     <p className="text-2xl font-bold text-foreground">Performance</p>
                   </div>
                   <div className="space-y-3">
-                    {[...Array(4)].map((_, i) => (
+                    {barData.map((bar, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div
+                        <motion.div
                           className="h-2 flex-grow rounded-full"
-                          style={{
-                            width: `${randomDataPoints[i]}%`,
-                            backgroundColor: i % 2 === 0 ? '#00BC7D' : '#CC3431',
-                            opacity: 1 - i * 0.12,
-                          }}
+                          style={{ backgroundColor: bar.color }}
+                          initial={reduceMotion ? false : { width: 0 }}
+                          whileInView={{ width: `${bar.width}%` }}
+                          viewport={viewport}
+                          transition={{ delay: 0.4 + i * 0.12, duration: 0.7, ease: easeOutExpo }}
                         />
-                        <span className="text-xs text-foreground/50 w-8 text-right">
-                          {randomPercentages[i]}%
-                        </span>
+                        <span className="w-8 text-right text-xs text-foreground/50">{bar.width}%</span>
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Secondary Metric */}
-              <div className="bg-secondary border border-border rounded-2xl p-6 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                <p className="text-xs text-foreground/50 mb-2">Revenue</p>
-                <p className="text-3xl font-bold text-primary mb-2">$124,580</p>
-                <p className="text-xs font-medium text-accent/90">↑ 12.5% this week</p>
-              </div>
-            </div>
+              <div className="space-y-6">
+                <motion.div
+                  className="rounded-2xl border border-border bg-secondary p-6"
+                  initial={reduceMotion ? false : { opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={viewport}
+                  transition={{ duration: 0.5, ease: easeOutExpo }}
+                >
+                  <p className="mb-3 text-xs text-foreground/50">Recent activity</p>
+                  <div className="space-y-2">
+                    {tableRows.map((row, i) => (
+                      <motion.div
+                        key={row.id}
+                        className="flex items-center justify-between rounded-lg border border-border/60 bg-background px-3 py-2"
+                        initial={reduceMotion ? false : { opacity: 0, x: 12 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={viewport}
+                        transition={{ delay: 0.5 + i * 0.1, duration: 0.4, ease: easeOutExpo }}
+                      >
+                        <div>
+                          <p className="font-mono text-xs text-foreground/70">{row.id}</p>
+                          <p className="text-xs text-foreground/50">{row.type}</p>
+                        </div>
+                        <span className="text-sm font-medium text-primary">{row.amount}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
 
-            {/* Right Column - Forms & Controls */}
-            <div className="space-y-6">
-              {/* Login Form Card */}
-              <div className="bg-secondary border border-border rounded-2xl p-6 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-foreground">Secure Access</p>
-                    <p className="text-xs text-foreground/50">Member Login</p>
+                <motion.div
+                  className="flex items-center gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4"
+                  initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={viewport}
+                  transition={{ delay: 0.7, duration: 0.5, ease: easeOutExpo }}
+                >
+                  <motion.div
+                    animate={reduceMotion ? undefined : { rotate: [0, 8, -8, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    <Sparkles className="h-5 w-5 text-primary" aria-hidden />
+                  </motion.div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">AI analyzing…</p>
+                    <p className="text-xs text-foreground/50">Restock recommendation ready</p>
                   </div>
-                  <div className="space-y-3">
-                    <input
-                      type="email"
-                      placeholder="Email address"
-                      className="w-full px-4 py-2 bg-background border border-border rounded-lg text-sm text-foreground placeholder:text-foreground/30"
-                      readOnly
-                    />
-                    <input
-                      type="password"
-                      placeholder="Password"
-                      className="w-full px-4 py-2 bg-background border border-border rounded-lg text-sm text-foreground placeholder:text-foreground/30"
-                      readOnly
-                    />
-                    <button className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors">
-                      Access Account
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Status Cards */}
-              <div className="space-y-3">
-                <div className="bg-secondary border border-border rounded-2xl p-4 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-foreground">System Status</span>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                  </div>
-                  <p className="text-xs text-foreground/50 mt-1">All systems operational</p>
-                </div>
-                <div className="bg-secondary border border-border rounded-2xl p-4 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
-                  <p className="text-xs text-foreground/50">Last Sync</p>
-                  <p className="text-sm font-medium text-foreground">Just now</p>
-                </div>
+                </motion.div>
               </div>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </section>
-  );
+  )
 }

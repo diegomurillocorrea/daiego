@@ -1,72 +1,89 @@
-'use client';
+'use client'
 
-import { CheckCircle2 } from 'lucide-react';
+import { type LucideIcon, Settings2, Sparkles, TrendingUp } from 'lucide-react'
+import {
+  AnimatedCard,
+  OperationsFlow,
+  RevealHeading,
+  StaggerContainer,
+  StaggerItem,
+} from '@/components/motion'
 
-const reasons = [
+interface Pillar {
+  number: string
+  title: string
+  description: string
+  icon: LucideIcon
+}
+
+const pillars: Pillar[] = [
   {
-    title: 'Tailored Solutions',
-    description: 'We build software specifically for real business operations, not generic templates',
+    number: '01',
+    title: 'Operate',
+    description: 'Run sales, inventory, teams and services from connected modules.',
+    icon: Settings2,
   },
   {
-    title: 'Modern & Clean Interfaces',
-    description: 'Beautiful, intuitive design that your team will actually enjoy using',
+    number: '02',
+    title: 'Automate',
+    description: 'Use AI and workflows to reduce repetitive tasks and improve decisions.',
+    icon: Sparkles,
   },
   {
-    title: 'Scalable Architecture',
-    description: 'Systems built to grow with your business from day one to enterprise scale',
+    number: '03',
+    title: 'Scale',
+    description: 'Grow from one operation to multiple branches, products and digital ecosystems.',
+    icon: TrendingUp,
   },
-  {
-    title: 'Fast Development',
-    description: 'Rapid iteration and deployment without sacrificing code quality',
-  },
-  {
-    title: 'Centralized Management',
-    description: 'Single dashboard to control all your business operations and workflows',
-  },
-  {
-    title: 'Focus on Usability',
-    description: 'Every feature designed with your team\'s actual workflow in mind',
-  },
-];
+]
 
 export function WhyChoose() {
   return (
-    <section id="about" className="py-20 bg-secondary border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="section-heading-ruby-line text-4xl lg:text-5xl font-bold text-foreground">
-            Why Choose <span className="text-accent/90">DAIEGO</span>
-          </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
-            We&apos;re not just developers—we&apos;re partners in your business growth
-          </p>
+    <section id="operations" className="border-t border-border bg-background py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
+          <RevealHeading
+            title="Built from real operations"
+            subtitle="Every DAIEGO product is built from real operational needs: managing sales, tracking stock, controlling employee hours, processing payments, handling subscriptions and understanding business data."
+          />
         </div>
 
-        {/* Reasons Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {reasons.map((reason, idx) => (
-            <div
-              key={idx}
-              className="flex gap-4 rounded-xl border border-border bg-background p-6 transition-all duration-300 hover:border-primary/45 hover:shadow-[0_8px_32px_-10px_rgba(204,52,49,0.07),0_6px_24px_-8px_rgba(0,188,125,0.06)]"
-            >
-              <div className="flex-shrink-0">
-                <CheckCircle2
-                  className={`mt-1 h-6 w-6 ${idx % 2 === 0 ? 'text-primary' : 'text-accent/85'}`}
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {reason.title}
-                </h3>
-                <p className="text-foreground/60">
-                  {reason.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <StaggerContainer className="grid gap-6 md:grid-cols-3">
+          {pillars.map((pillar, idx) => {
+            const Icon = pillar.icon
+            return (
+              <StaggerItem key={pillar.title}>
+                <AnimatedCard
+                  className="group relative flex flex-col rounded-2xl border border-border bg-secondary p-8 transition-all duration-300 hover:border-primary/45 hover:shadow-[0_10px_36px_-12px_rgba(0,188,125,0.08),0_6px_28px_-10px_rgba(204,52,49,0.06)]"
+                  delay={idx * 0.08}
+                >
+                  <p
+                    className={`absolute -top-2 right-4 text-7xl font-bold ${idx % 2 === 0 ? 'text-foreground/6' : 'text-accent/10'}`}
+                    aria-hidden
+                  >
+                    {pillar.number}
+                  </p>
+                  <div className="relative z-10">
+                    <div
+                      className={`mb-6 inline-flex rounded-xl p-3 transition-colors ${
+                        idx % 2 === 0
+                          ? 'bg-primary/10 text-primary group-hover:bg-primary/20'
+                          : 'bg-linear-to-br from-primary/10 to-accent/10 text-accent/90'
+                      }`}
+                    >
+                      <Icon size={24} aria-hidden />
+                    </div>
+                    <h3 className="mb-3 text-2xl font-bold text-foreground">{pillar.title}</h3>
+                    <p className="text-foreground/60">{pillar.description}</p>
+                  </div>
+                </AnimatedCard>
+              </StaggerItem>
+            )
+          })}
+        </StaggerContainer>
+
+        <OperationsFlow />
       </div>
     </section>
-  );
+  )
 }
