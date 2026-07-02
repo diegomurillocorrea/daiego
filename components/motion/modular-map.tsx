@@ -35,20 +35,25 @@ const hubModules: HubModule[] = [
   { id: 'reports', label: 'Reports', icon: BarChart3, angle: 315 },
 ]
 
-const CENTER = 200
-const RADIUS = 140
+const VIEWBOX_SIZE = 400
+const CENTER = VIEWBOX_SIZE / 2
+const RADIUS = 158
+const RING_DIAMETER_PERCENT = (RADIUS * 2) / VIEWBOX_SIZE * 100
 
 function getPosition(angle: number, radius: number) {
   const rad = (angle - 90) * (Math.PI / 180)
   return {
-    x: Math.cos(rad) * radius,
-    y: Math.sin(rad) * radius,
+    x: (Math.cos(rad) * radius / VIEWBOX_SIZE) * 100,
+    y: (Math.sin(rad) * radius / VIEWBOX_SIZE) * 100,
   }
 }
 
 function getSvgCoords(angle: number, radius: number) {
-  const pos = getPosition(angle, radius)
-  return { x: CENTER + pos.x, y: CENTER + pos.y }
+  const rad = (angle - 90) * (Math.PI / 180)
+  return {
+    x: CENTER + Math.cos(rad) * radius,
+    y: CENTER + Math.sin(rad) * radius,
+  }
 }
 
 export function ModularMap() {
@@ -56,8 +61,8 @@ export function ModularMap() {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl">
-      <div className="relative mx-auto hidden aspect-square max-h-[420px] w-full md:block">
+    <div className="relative mx-auto w-full max-w-2xl overflow-visible">
+      <div className="relative mx-auto hidden aspect-square max-h-[480px] w-full overflow-visible md:block">
         <motion.div
           className="absolute left-1/2 top-1/2 z-20 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl border border-primary/40 bg-secondary shadow-[0_0_40px_-8px_rgba(0,188,125,0.4)]"
           initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
@@ -72,7 +77,8 @@ export function ModularMap() {
         </motion.div>
 
         <motion.div
-          className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-border/50"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border/50"
+          style={{ width: `${RING_DIAMETER_PERCENT}%`, height: `${RING_DIAMETER_PERCENT}%` }}
           initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={viewport}
@@ -113,42 +119,45 @@ export function ModularMap() {
           const isActive = activeId === mod.id
 
           return (
-            <motion.button
+            <div
               key={mod.id}
-              type="button"
-              className={cn(
-                'absolute z-10 flex flex-col items-center gap-1.5 rounded-xl border bg-secondary px-3 py-2.5 transition-colors duration-300',
-                isActive
-                  ? 'border-primary/50 shadow-[0_0_20px_-4px_rgba(0,188,125,0.35)]'
-                  : 'border-border hover:border-primary/35',
-              )}
+              className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
               style={{
-                left: `calc(50% + ${pos.x}px)`,
-                top: `calc(50% + ${pos.y}px)`,
-                transform: 'translate(-50%, -50%)',
+                left: `calc(50% + ${pos.x}%)`,
+                top: `calc(50% + ${pos.y}%)`,
               }}
-              initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={viewport}
-              transition={{ delay: 0.7 + i * 0.08, duration: 0.45, ease: easeOutExpo }}
-              onMouseEnter={() => setActiveId(mod.id)}
-              onMouseLeave={() => setActiveId(null)}
-              onFocus={() => setActiveId(mod.id)}
-              onBlur={() => setActiveId(null)}
-              aria-label={`${mod.label} module`}
             >
-              <div
+              <motion.button
+                type="button"
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
-                  isActive ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary',
+                  'flex w-23 flex-col items-center gap-1.5 rounded-xl border bg-secondary px-2.5 py-2.5 transition-colors duration-300',
+                  isActive
+                    ? 'border-primary/50 shadow-[0_0_20px_-4px_rgba(0,188,125,0.35)]'
+                    : 'border-border hover:border-primary/35',
                 )}
+                initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={viewport}
+                transition={{ delay: 0.7 + i * 0.08, duration: 0.45, ease: easeOutExpo }}
+                onMouseEnter={() => setActiveId(mod.id)}
+                onMouseLeave={() => setActiveId(null)}
+                onFocus={() => setActiveId(mod.id)}
+                onBlur={() => setActiveId(null)}
+                aria-label={`${mod.label} module`}
               >
-                <Icon size={16} aria-hidden />
-              </div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-foreground/70">
-                {mod.label}
-              </span>
-            </motion.button>
+                <div
+                  className={cn(
+                    'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+                    isActive ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary',
+                  )}
+                >
+                  <Icon size={16} aria-hidden />
+                </div>
+                <span className="text-center font-mono text-[9px] uppercase leading-tight tracking-wider text-foreground/70">
+                  {mod.label}
+                </span>
+              </motion.button>
+            </div>
           )
         })}
       </div>
