@@ -1,26 +1,39 @@
 'use client'
 
 import { Blocks, Boxes, ClipboardList, ShoppingBag, Store, TrendingUp } from 'lucide-react'
+import { useMemo } from 'react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import { AnimatedCard, FadeIn, RevealHeading, StaggerContainer, StaggerItem } from '@/components/motion'
 
-const toysBullets = [
-  { label: 'LEGO, Funkos and Hot Wheels', icon: Blocks },
-  { label: 'Inventory management', icon: Boxes },
-  { label: 'Marketplace operations', icon: ShoppingBag },
-  { label: 'Local store sales', icon: Store },
-  { label: 'Customer order tracking', icon: ClipboardList },
-  { label: 'Sales and stock reports', icon: TrendingUp },
-]
+const BULLET_ICONS = [Blocks, Boxes, ShoppingBag, Store, ClipboardList, TrendingUp]
+const TOOL_ICONS = [Store, ClipboardList, TrendingUp]
 
 export function Ecosystems() {
+  const { ecosystems } = useDictionary()
+
+  const toysBullets = useMemo(
+    () =>
+      ecosystems.bullets.map((label, index) => ({
+        label,
+        icon: BULLET_ICONS[index],
+      })),
+    [ecosystems.bullets],
+  )
+
+  const tools = useMemo(
+    () =>
+      ecosystems.tools.map((tool, index) => ({
+        ...tool,
+        icon: TOOL_ICONS[index],
+      })),
+    [ecosystems.tools],
+  )
+
   return (
-    <section id="ecosystems" className="border-t border-border bg-background py-20">
+    <section id="ecosystems" className="border-t border-border py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <RevealHeading
-            title="Ecosystems powered by DAIEGO"
-            subtitle="We do not only build software. We use our own systems to operate real businesses, validate workflows and improve our products from real operations."
-          />
+          <RevealHeading title={ecosystems.title} subtitle={ecosystems.subtitle} />
         </div>
 
         <FadeIn>
@@ -28,12 +41,10 @@ export function Ecosystems() {
             <div className="grid gap-0 lg:grid-cols-2">
               <div className="flex flex-col justify-center gap-6 p-8 lg:p-12">
                 <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-background px-3 py-1 font-mono text-xs uppercase tracking-widest text-primary/90 transition-colors hover:border-primary/40">
-                  Real operation
+                  {ecosystems.badge}
                 </span>
-                <h3 className="text-3xl font-bold text-foreground">DAIEGO Toys</h3>
-                <p className="leading-relaxed text-foreground/65">
-                  A retail and collectibles ecosystem powered by DAIEGO Store, Clofi and internal automation tools.
-                </p>
+                <h3 className="text-3xl font-bold text-foreground">{ecosystems.toysTitle}</h3>
+                <p className="leading-relaxed text-foreground/65">{ecosystems.toysDescription}</p>
                 <StaggerContainer className="grid gap-3 sm:grid-cols-2">
                   {toysBullets.map((bullet, idx) => {
                     const Icon = bullet.icon
@@ -61,11 +72,7 @@ export function Ecosystems() {
                   <div className="absolute bottom-1/4 left-0 h-56 w-56 rounded-full bg-accent/8 blur-3xl" />
                 </div>
                 <StaggerContainer className="relative z-10 w-full max-w-sm space-y-4">
-                  {[
-                    { tool: 'DAIEGO Store', detail: 'Inventory · POS · Sales', icon: Store },
-                    { tool: 'DAIEGO Clofi', detail: 'Team · Attendance', icon: ClipboardList },
-                    { tool: 'AI Automation', detail: 'Reports · Restock alerts', icon: TrendingUp },
-                  ].map((row, i) => {
+                  {tools.map((row, i) => {
                     const Icon = row.icon
                     return (
                       <StaggerItem key={row.tool}>

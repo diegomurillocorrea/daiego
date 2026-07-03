@@ -1,0 +1,29 @@
+.el-salvador-dot-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  touch-action: none;
+}
+
+.el-salvador-dot-map__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.el-salvador-dot-map__glow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.el-salvador-dot-map__glow-circle {
+  transition: opacity 0.15s ease-out;
+}

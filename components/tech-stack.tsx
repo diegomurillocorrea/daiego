@@ -1,6 +1,7 @@
 'use client'
 
 import type { ComponentType } from 'react'
+import { useMemo } from 'react'
 import type { IconType } from 'react-icons'
 import { NeonIcon } from '@/components/icons/neon-icon'
 import { DiMsqlServer } from 'react-icons/di'
@@ -23,6 +24,7 @@ import {
 } from 'react-icons/si'
 import { FaAws } from 'react-icons/fa'
 import { Bot, type LucideIcon, Workflow } from 'lucide-react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import { FadeIn, RevealHeading } from '@/components/motion'
 
 type CustomIconComponent = ComponentType<{ className?: string }>
@@ -36,56 +38,6 @@ interface TechCategory {
   title: string
   items: TechItem[]
 }
-
-const techCategories: TechCategory[] = [
-  {
-    title: 'Frontend',
-    items: [
-      { name: 'Next.js', Icon: SiNextdotjs },
-      { name: 'React', Icon: SiReact },
-      { name: 'Tailwind CSS', Icon: SiTailwindcss },
-      { name: 'Shadcn UI', Icon: SiShadcnui },
-    ],
-  },
-  {
-    title: 'Backend',
-    items: [
-      { name: '.NET', Icon: SiDotnet },
-      { name: 'FastAPI', Icon: SiFastapi },
-      { name: 'Node.js', Icon: SiNodedotjs },
-    ],
-  },
-  {
-    title: 'Databases',
-    items: [
-      { name: 'PostgreSQL', Icon: SiPostgresql },
-      { name: 'SQL Server', Icon: DiMsqlServer },
-      { name: 'Supabase', Icon: SiSupabase },
-      { name: 'Neon', CustomIcon: NeonIcon },
-    ],
-  },
-  {
-    title: 'Cloud & DevOps',
-    items: [
-      { name: 'Vercel', Icon: SiVercel },
-      { name: 'Render', Icon: SiRender },
-      { name: 'Docker', Icon: SiDocker },
-      { name: 'Google Cloud', Icon: SiGooglecloud },
-      { name: 'AWS', Icon: FaAws },
-    ],
-  },
-  {
-    title: 'AI & Automation',
-    items: [
-      { name: 'OpenAI', Icon: SiOpenai },
-      { name: 'Gemini', Icon: SiGooglegemini },
-      { name: 'AI agents', LucideIcon: Bot },
-      { name: 'Workflow automation', LucideIcon: Workflow },
-    ],
-  },
-]
-
-const allTechItems: TechItem[] = techCategories.flatMap((c) => c.items)
 
 const techIconGreenFilterClass =
   '[filter:brightness(0)_saturate(100%)_invert(56%)_sepia(57%)_saturate(1800%)_hue-rotate(118deg)_brightness(95%)_contrast(101%)]'
@@ -111,18 +63,73 @@ const TechPill = ({ item }: { item: TechItem }) => (
 )
 
 export function TechStack() {
+  const { techStack } = useDictionary()
+
+  const techCategories = useMemo<TechCategory[]>(
+    () => [
+      {
+        title: techStack.categories.frontend,
+        items: [
+          { name: 'Next.js', Icon: SiNextdotjs },
+          { name: 'React', Icon: SiReact },
+          { name: 'Tailwind CSS', Icon: SiTailwindcss },
+          { name: 'Shadcn UI', Icon: SiShadcnui },
+        ],
+      },
+      {
+        title: techStack.categories.backend,
+        items: [
+          { name: '.NET', Icon: SiDotnet },
+          { name: 'FastAPI', Icon: SiFastapi },
+          { name: 'Node.js', Icon: SiNodedotjs },
+        ],
+      },
+      {
+        title: techStack.categories.databases,
+        items: [
+          { name: 'PostgreSQL', Icon: SiPostgresql },
+          { name: 'SQL Server', Icon: DiMsqlServer },
+          { name: 'Supabase', Icon: SiSupabase },
+          { name: 'Neon', CustomIcon: NeonIcon },
+        ],
+      },
+      {
+        title: techStack.categories.cloudDevops,
+        items: [
+          { name: 'Vercel', Icon: SiVercel },
+          { name: 'Render', Icon: SiRender },
+          { name: 'Docker', Icon: SiDocker },
+          { name: 'Google Cloud', Icon: SiGooglecloud },
+          { name: 'AWS', Icon: FaAws },
+        ],
+      },
+      {
+        title: techStack.categories.aiAutomation,
+        items: [
+          { name: 'OpenAI', Icon: SiOpenai },
+          { name: 'Gemini', Icon: SiGooglegemini },
+          { name: techStack.items.aiAgents, LucideIcon: Bot },
+          { name: techStack.items.workflowAutomation, LucideIcon: Workflow },
+        ],
+      },
+    ],
+    [techStack],
+  )
+
+  const allTechItems = useMemo(
+    () => techCategories.flatMap((category) => category.items),
+    [techCategories],
+  )
+
   return (
     <section
       id="technologies"
-      className="w-full border-t border-border bg-secondary py-20"
+      className="w-full border-t border-border py-20"
       aria-labelledby="tech-stack-heading"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-14 text-center">
-          <RevealHeading
-            title="Technologies"
-            subtitle="A focused, modern stack we use to design, build and ship the DAIEGO platform."
-          />
+          <RevealHeading title={techStack.title} subtitle={techStack.subtitle} />
         </div>
 
         <FadeIn>

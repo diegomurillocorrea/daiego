@@ -1,6 +1,8 @@
 'use client'
 
 import { type LucideIcon, Settings2, Sparkles, TrendingUp } from 'lucide-react'
+import { useMemo } from 'react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import {
   AnimatedCard,
   OperationsFlow,
@@ -9,43 +11,27 @@ import {
   StaggerItem,
 } from '@/components/motion'
 
-interface Pillar {
-  number: string
-  title: string
-  description: string
-  icon: LucideIcon
-}
-
-const pillars: Pillar[] = [
-  {
-    number: '01',
-    title: 'Operate',
-    description: 'Run sales, inventory, teams and services from connected modules.',
-    icon: Settings2,
-  },
-  {
-    number: '02',
-    title: 'Automate',
-    description: 'Use AI and workflows to reduce repetitive tasks and improve decisions.',
-    icon: Sparkles,
-  },
-  {
-    number: '03',
-    title: 'Scale',
-    description: 'Grow from one operation to multiple branches, products and digital ecosystems.',
-    icon: TrendingUp,
-  },
-]
+const PILLAR_ICONS: LucideIcon[] = [Settings2, Sparkles, TrendingUp]
+const PILLAR_NUMBERS = ['01', '02', '03']
 
 export function WhyChoose() {
+  const { whyChoose } = useDictionary()
+
+  const pillars = useMemo(
+    () =>
+      whyChoose.pillars.map((pillar, index) => ({
+        ...pillar,
+        number: PILLAR_NUMBERS[index],
+        icon: PILLAR_ICONS[index],
+      })),
+    [whyChoose.pillars],
+  )
+
   return (
-    <section id="operations" className="border-t border-border bg-background py-20">
+    <section id="operations" className="border-t border-border py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <RevealHeading
-            title="Built from real operations"
-            subtitle="Every DAIEGO product is built from real operational needs: managing sales, tracking stock, controlling employee hours, processing payments, handling subscriptions and understanding business data."
-          />
+          <RevealHeading title={whyChoose.title} subtitle={whyChoose.subtitle} />
         </div>
 
         <StaggerContainer className="grid gap-6 md:grid-cols-3">

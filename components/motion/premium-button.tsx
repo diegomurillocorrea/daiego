@@ -3,12 +3,15 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { scrollToSection } from '@/lib/scroll-to-section'
 import { cn } from '@/lib/utils'
+import { useGooeyBurst } from './use-gooey-burst'
 import { useMotionSafe } from './use-motion-safe'
 
 interface PremiumButtonProps {
   children: React.ReactNode
   href?: string
+  sectionId?: string
   variant?: 'primary' | 'outline'
   className?: string
   showArrow?: boolean
@@ -18,12 +21,30 @@ interface PremiumButtonProps {
 export function PremiumButton({
   children,
   href,
+  sectionId,
   variant = 'primary',
   className,
   showArrow = true,
   onClick,
 }: PremiumButtonProps) {
   const reduceMotion = useMotionSafe()
+  const { containerRef, effectRef, play } = useGooeyBurst({
+    particleCount: 15,
+    particleDistances: [90, 10],
+    particleR: 100,
+    animationTime: 600,
+    timeVariance: 300,
+    colors: [1, 2, 3, 1, 2, 3, 1, 4],
+    showPill: false,
+  })
+
+  const handleClick = () => {
+    play(containerRef.current)
+    if (sectionId) scrollToSection(sectionId)
+    onClick?.()
+  }
+
+  const isFullWidth = className?.includes('w-full')
 
   const baseClass =
     variant === 'primary'
@@ -57,30 +78,37 @@ export function PremiumButton({
   )
 
   return (
-    <motion.div
-      whileHover={
-        reduceMotion
-          ? undefined
-          : {
-              scale: 1.02,
-              boxShadow:
-                variant === 'primary'
-                  ? '0 0 28px -4px rgba(0, 188, 125, 0.45)'
-                  : '0 0 20px -6px rgba(0, 188, 125, 0.2)',
-            }
-      }
-      whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-      className="inline-block"
+    <div
+      ref={containerRef}
+      className={cn('gooey-burst', isFullWidth && 'gooey-burst--block')}
     >
-      <Button
-        size="lg"
-        variant={variant === 'outline' ? 'outline' : 'default'}
-        className={cn(baseClass, className)}
-        asChild={!!href}
-        onClick={onClick}
+      <motion.div
+        whileHover={
+          reduceMotion
+            ? undefined
+            : {
+                scale: 1.02,
+                boxShadow:
+                  variant === 'primary'
+                    ? '0 0 28px -4px rgba(0, 188, 125, 0.45)'
+                    : '0 0 20px -6px rgba(0, 188, 125, 0.2)',
+              }
+        }
+        whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+        className={cn('inline-block', isFullWidth && 'block w-full')}
       >
-        {href ? <a href={href}>{content}</a> : <span>{content}</span>}
-      </Button>
-    </motion.div>
+        <Button
+          size="lg"
+          variant={variant === 'outline' ? 'outline' : 'default'}
+          className={cn(baseClass, className)}
+          asChild={!!href}
+          onClick={handleClick}
+          type={sectionId || !href ? 'button' : undefined}
+        >
+          {href ? <a href={href}>{content}</a> : <span>{content}</span>}
+        </Button>
+      </motion.div>
+      <span className="gooey-burst__effect" ref={effectRef} aria-hidden="true" />
+    </div>
   )
 }

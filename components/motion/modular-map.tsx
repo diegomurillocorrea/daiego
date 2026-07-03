@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   BarChart3,
@@ -13,26 +13,26 @@ import {
   Wrench,
   type LucideIcon,
 } from 'lucide-react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import { cn } from '@/lib/utils'
 import { easeOutExpo, viewport } from '@/lib/motion'
 import { useMotionSafe } from './use-motion-safe'
 
-interface HubModule {
+interface HubModuleBase {
   id: string
-  label: string
   icon: LucideIcon
   angle: number
 }
 
-const hubModules: HubModule[] = [
-  { id: 'store', label: 'Store', icon: Store, angle: 0 },
-  { id: 'clofi', label: 'Clofi', icon: Clock, angle: 45 },
-  { id: 'receipts', label: 'Receipts', icon: ReceiptText, angle: 90 },
-  { id: 'streaming', label: 'Streaming', icon: MonitorPlay, angle: 135 },
-  { id: 'toys', label: 'Toys', icon: Blocks, angle: 180 },
-  { id: 'studio', label: 'Studio', icon: Wrench, angle: 225 },
-  { id: 'ai', label: 'AI Automation', icon: Sparkles, angle: 270 },
-  { id: 'reports', label: 'Reports', icon: BarChart3, angle: 315 },
+const HUB_MODULE_BASE: HubModuleBase[] = [
+  { id: 'store', icon: Store, angle: 0 },
+  { id: 'clofi', icon: Clock, angle: 45 },
+  { id: 'receipts', icon: ReceiptText, angle: 90 },
+  { id: 'streaming', icon: MonitorPlay, angle: 135 },
+  { id: 'toys', icon: Blocks, angle: 180 },
+  { id: 'studio', icon: Wrench, angle: 225 },
+  { id: 'ai', icon: Sparkles, angle: 270 },
+  { id: 'reports', icon: BarChart3, angle: 315 },
 ]
 
 const VIEWBOX_SIZE = 400
@@ -57,8 +57,18 @@ function getSvgCoords(angle: number, radius: number) {
 }
 
 export function ModularMap() {
+  const { modularMap } = useDictionary()
   const reduceMotion = useMotionSafe()
   const [activeId, setActiveId] = useState<string | null>(null)
+
+  const hubModules = useMemo(
+    () =>
+      HUB_MODULE_BASE.map((module) => ({
+        ...module,
+        label: modularMap.labels[module.id] ?? module.id,
+      })),
+    [modularMap.labels],
+  )
 
   return (
     <div className="relative mx-auto w-full max-w-2xl overflow-visible">
@@ -72,7 +82,9 @@ export function ModularMap() {
         >
           <div className="text-center">
             <p className="text-lg font-bold text-primary">DAIEGO</p>
-            <p className="font-mono text-[9px] uppercase tracking-widest text-foreground/50">Core OS</p>
+            <p className="font-mono text-[9px] uppercase tracking-widest text-foreground/50">
+              {modularMap.coreLabel}
+            </p>
           </div>
         </motion.div>
 

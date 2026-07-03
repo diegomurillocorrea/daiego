@@ -1,0 +1,100 @@
+.gooey-nav-container {
+  --color-1: #00bc7d;
+  --color-2: #ffffff;
+  --color-3: #34d399;
+  --color-4: #cc3431;
+  position: relative;
+}
+
+.gooey-nav-container__list-wrap {
+  display: flex;
+  position: relative;
+  transform: translate3d(0, 0, 0.01px);
+}
+
+.gooey-nav-container ul {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  z-index: 3;
+  color: white;
+  text-shadow: 0 1px 1px hsl(205deg 30% 10% / 0.2);
+}
+
+.gooey-nav-container ul li {
+  border-radius: 100vw;
+  position: relative;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 0 0.5px 1.5px transparent;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.gooey-nav-container ul li button {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+}
+
+.gooey-nav-container ul li:focus-within:has(:focus-visible) {
+  box-shadow: 0 0 0.5px 1.5px white;
+}
+
+.gooey-nav-container ul li::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 100vw;
+  background: white;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.gooey-nav-container ul li.active {
+  color: black;
+  text-shadow: none;
+}
+
+.gooey-nav-container ul li.active::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gooey-nav-container .gooey-burst__effect {
+  z-index: 1;
+}
+
+.gooey-nav-container .effect-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 1;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: color 0.3s ease;
+}
+
+.gooey-nav-container .effect-text.is-active {
+  color: black;
+}

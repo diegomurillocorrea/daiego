@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import { FadeIn, RevealHeading, useMotionSafe } from '@/components/motion'
 import { easeOutExpo, viewport } from '@/lib/motion'
 
@@ -66,6 +67,7 @@ function AnimatedMetric({
 }
 
 export function Showcase() {
+  const { showcase } = useDictionary()
   const reduceMotion = useMotionSafe()
 
   const barData = useMemo(
@@ -80,15 +82,15 @@ export function Showcase() {
 
   const tableRows = useMemo(
     () => [
-      { id: 'TX-1042', type: 'Sale', amount: '$248.00' },
-      { id: 'TX-1043', type: 'Inventory', amount: '-12 units' },
-      { id: 'TX-1044', type: 'Subscription', amount: '$19.99' },
+      { id: 'TX-1042', type: showcase.activityTypes.sale, amount: '$248.00' },
+      { id: 'TX-1043', type: showcase.activityTypes.inventory, amount: '-12 units' },
+      { id: 'TX-1044', type: showcase.activityTypes.subscription, amount: '$19.99' },
     ],
-    [],
+    [showcase.activityTypes],
   )
 
   return (
-    <section className="relative overflow-hidden border-t border-border bg-secondary py-20">
+    <section className="relative overflow-hidden border-t border-border py-20">
       <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>
         <div className="absolute top-1/4 right-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute bottom-1/4 left-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
@@ -96,20 +98,17 @@ export function Showcase() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <RevealHeading
-            title="One platform. Multiple modules."
-            subtitle="Sales, operations, customers and data—connected in a single modular interface and powered by AI."
-          />
+          <RevealHeading title={showcase.title} subtitle={showcase.subtitle} />
         </div>
 
         <FadeIn>
           <div className="rounded-3xl border border-border bg-background p-8 shadow-[inset_0_1px_0_0_rgba(204,52,49,0.1)] lg:p-12">
             <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              <AnimatedMetric label="Sales today" value={12847} prefix="$" delay={0} />
-              <AnimatedMetric label="Inventory alerts" value={3} delay={0.08} />
-              <AnimatedMetric label="Employees active" value={24} delay={0.16} />
-              <AnimatedMetric label="Subscriptions due" value={7} delay={0.24} />
-              <AnimatedMetric label="AI recommendations" value={5} delay={0.32} />
+              <AnimatedMetric label={showcase.metrics.salesToday} value={12847} prefix="$" delay={0} />
+              <AnimatedMetric label={showcase.metrics.inventoryAlerts} value={3} delay={0.08} />
+              <AnimatedMetric label={showcase.metrics.employeesActive} value={24} delay={0.16} />
+              <AnimatedMetric label={showcase.metrics.subscriptionsDue} value={7} delay={0.24} />
+              <AnimatedMetric label={showcase.metrics.aiRecommendations} value={5} delay={0.32} />
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
@@ -122,7 +121,7 @@ export function Showcase() {
                   transition={{ duration: 0.5, ease: easeOutExpo }}
                 >
                   <div className="mb-4 flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground">Admin Panel</h4>
+                    <h4 className="font-semibold text-foreground">{showcase.adminPanel}</h4>
                     <motion.div
                       className="h-3 w-3 rounded-full bg-primary"
                       animate={reduceMotion ? undefined : { opacity: [1, 0.4, 1] }}
@@ -144,8 +143,8 @@ export function Showcase() {
                 </motion.div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <AnimatedMetric label="Total Users" value={2847} delay={0.2} />
-                  <AnimatedMetric label="Active" value={1294} delay={0.28} />
+                  <AnimatedMetric label={showcase.metrics.totalUsers} value={2847} delay={0.2} />
+                  <AnimatedMetric label={showcase.metrics.active} value={1294} delay={0.28} />
                 </div>
               </div>
 
@@ -158,8 +157,8 @@ export function Showcase() {
               >
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <p className="text-xs text-foreground/50">Dashboard</p>
-                    <p className="text-2xl font-bold text-foreground">Performance</p>
+                    <p className="text-xs text-foreground/50">{showcase.dashboard}</p>
+                    <p className="text-2xl font-bold text-foreground">{showcase.performance}</p>
                   </div>
                   <div className="space-y-3">
                     {barData.map((bar, i) => (
@@ -187,7 +186,7 @@ export function Showcase() {
                   viewport={viewport}
                   transition={{ duration: 0.5, ease: easeOutExpo }}
                 >
-                  <p className="mb-3 text-xs text-foreground/50">Recent activity</p>
+                  <p className="mb-3 text-xs text-foreground/50">{showcase.recentActivity}</p>
                   <div className="space-y-2">
                     {tableRows.map((row, i) => (
                       <motion.div
@@ -222,8 +221,8 @@ export function Showcase() {
                     <Sparkles className="h-5 w-5 text-primary" aria-hidden />
                   </motion.div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">AI analyzing…</p>
-                    <p className="text-xs text-foreground/50">Restock recommendation ready</p>
+                    <p className="text-sm font-medium text-foreground">{showcase.aiAnalyzing}</p>
+                    <p className="text-xs text-foreground/50">{showcase.restockReady}</p>
                   </div>
                 </motion.div>
               </div>

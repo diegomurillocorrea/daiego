@@ -9,6 +9,8 @@ import {
   ReceiptText,
   Store,
 } from 'lucide-react'
+import { useMemo } from 'react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import {
   Card3D,
   RevealHeading,
@@ -25,40 +27,7 @@ interface App {
   comingSoon?: boolean
 }
 
-const apps: App[] = [
-  {
-    name: 'DAIEGO Store',
-    description: 'Inventory, POS, sales and branch management for retail businesses.',
-    icon: Store,
-    features: ['Inventory control', 'Point of sale', 'Sales tracking', 'Branch management'],
-  },
-  {
-    name: 'DAIEGO Clofi',
-    description: 'Employee attendance, time tracking and workforce management for store teams.',
-    icon: Clock,
-    features: ['Clock in / clock out', 'Worked hours', 'Attendance records', 'Team management'],
-  },
-  {
-    name: 'DAIEGO Receipts',
-    description: 'Payments, receipts and service management for daily business operations.',
-    icon: ReceiptText,
-    features: ['Payment processing', 'Receipt management', 'Client services', 'Daily control'],
-  },
-  {
-    name: 'DAIEGO Streaming',
-    description: 'Subscription, profile, renewal and customer management for digital services.',
-    icon: MonitorPlay,
-    features: ['Subscription control', 'Profile management', 'Renewals', 'Customer tracking'],
-  },
-]
-
-const upcomingApp: App = {
-  name: 'DAIEGO Finance',
-  description: 'Savings, loans and financial workflows—built on the DAIEGO platform.',
-  icon: Landmark,
-  features: ['Account control', 'Finance workflows', 'Risk assessment'],
-  comingSoon: true,
-}
+const APP_ICONS: LucideIcon[] = [Store, Clock, ReceiptText, MonitorPlay]
 
 function AppCard({ app, index }: { app: App; index: number }) {
   const Icon = app.icon
@@ -92,14 +61,31 @@ function AppCard({ app, index }: { app: App; index: number }) {
 }
 
 export function Products() {
+  const { products } = useDictionary()
+
+  const apps = useMemo(
+    () =>
+      products.apps.map((app, index) => ({
+        ...app,
+        icon: APP_ICONS[index],
+      })),
+    [products.apps],
+  )
+
+  const upcomingApp = useMemo(
+    () => ({
+      ...products.upcoming,
+      icon: Landmark,
+      comingSoon: true,
+    }),
+    [products.upcoming],
+  )
+
   return (
-    <section id="apps" className="border-t border-border bg-secondary py-20">
+    <section id="apps" className="border-t border-border py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <RevealHeading
-            title="The DAIEGO Ecosystem"
-            subtitle="Modular apps inside DAIEGO—each one a real software product, connected by the same platform and AI."
-          />
+          <RevealHeading title={products.title} subtitle={products.subtitle} />
         </div>
 
         <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -118,7 +104,7 @@ export function Products() {
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold text-foreground/80">{upcomingApp.name}</h3>
                     <span className="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent/90">
-                      Coming soon
+                      {products.comingSoon}
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-foreground/50">{upcomingApp.description}</p>

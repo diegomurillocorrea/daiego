@@ -13,6 +13,8 @@ import {
   Users,
   Wallet,
 } from 'lucide-react'
+import { useMemo } from 'react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import {
   AnimatedCard,
   ModularMap,
@@ -21,33 +23,36 @@ import {
   StaggerItem,
 } from '@/components/motion'
 
-interface Module {
-  label: string
-  icon: LucideIcon
-}
-
-const modules: Module[] = [
-  { label: 'Sales', icon: LineChart },
-  { label: 'Inventory', icon: Boxes },
-  { label: 'POS', icon: ScanLine },
-  { label: 'Employees', icon: Users },
-  { label: 'Attendance', icon: CalendarClock },
-  { label: 'Payments', icon: CreditCard },
-  { label: 'Subscriptions', icon: RefreshCw },
-  { label: 'Customers', icon: Wallet },
-  { label: 'Reports', icon: BarChart3 },
-  { label: 'AI Automation', icon: Sparkles },
+const MODULE_ICONS: LucideIcon[] = [
+  LineChart,
+  Boxes,
+  ScanLine,
+  Users,
+  CalendarClock,
+  CreditCard,
+  RefreshCw,
+  Wallet,
+  BarChart3,
+  Sparkles,
 ]
 
 export function Platform() {
+  const { platform } = useDictionary()
+
+  const modules = useMemo(
+    () =>
+      platform.modules.map((label, index) => ({
+        label,
+        icon: MODULE_ICONS[index],
+      })),
+    [platform.modules],
+  )
+
   return (
-    <section id="platform" className="border-t border-border bg-background py-20">
+    <section id="platform" className="border-t border-border py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <RevealHeading
-            title="What DAIEGO Does"
-            subtitle="DAIEGO connects the essential parts of a business operation into one modular platform—powered by AI."
-          />
+          <RevealHeading title={platform.title} subtitle={platform.subtitle} />
         </div>
 
         <div className="mb-16">
@@ -81,7 +86,7 @@ export function Platform() {
         </StaggerContainer>
 
         <p className="mt-10 text-center font-mono text-sm text-foreground/50">
-          Sales · Inventory · POS · Employees · Attendance · Payments · Subscriptions · Customers · Reports · AI
+          {platform.footerLine}
         </p>
       </div>
     </section>

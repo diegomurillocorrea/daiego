@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
   BarChart3,
@@ -10,65 +11,39 @@ import {
   Store,
   type LucideIcon,
 } from 'lucide-react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import { cn } from '@/lib/utils'
 import { easeOutExpo, viewport } from '@/lib/motion'
 import { useMotionSafe } from './use-motion-safe'
 
-interface FlowStep {
+interface FlowStepBase {
   id: string
-  label: string
-  detail: string
   icon: LucideIcon
   module: string
 }
 
-const flowSteps: FlowStep[] = [
-  {
-    id: 'sale',
-    label: 'Sale',
-    detail: 'A sale occurs in DAIEGO Toys',
-    icon: Blocks,
-    module: 'Toys',
-  },
-  {
-    id: 'inventory',
-    label: 'Inventory',
-    detail: 'DAIEGO Store updates stock',
-    icon: Store,
-    module: 'Store',
-  },
-  {
-    id: 'employee',
-    label: 'Employee',
-    detail: 'Clofi logs team activity',
-    icon: Clock,
-    module: 'Clofi',
-  },
-  {
-    id: 'payment',
-    label: 'Payment',
-    detail: 'Receipts processes transaction',
-    icon: ReceiptText,
-    module: 'Receipts',
-  },
-  {
-    id: 'report',
-    label: 'Report',
-    detail: 'Reports aggregates data',
-    icon: BarChart3,
-    module: 'Reports',
-  },
-  {
-    id: 'ai',
-    label: 'AI Decision',
-    detail: 'AI generates recommendation',
-    icon: Sparkles,
-    module: 'AI',
-  },
+const FLOW_STEP_BASE: FlowStepBase[] = [
+  { id: 'sale', icon: Blocks, module: 'Toys' },
+  { id: 'inventory', icon: Store, module: 'Store' },
+  { id: 'employee', icon: Clock, module: 'Clofi' },
+  { id: 'payment', icon: ReceiptText, module: 'Receipts' },
+  { id: 'report', icon: BarChart3, module: 'Reports' },
+  { id: 'ai', icon: Sparkles, module: 'AI' },
 ]
 
 export function OperationsFlow() {
+  const { operationsFlow } = useDictionary()
   const reduceMotion = useMotionSafe()
+
+  const flowSteps = useMemo(
+    () =>
+      FLOW_STEP_BASE.map((step, index) => ({
+        ...step,
+        label: operationsFlow.steps[index]?.label ?? step.id,
+        detail: operationsFlow.steps[index]?.detail ?? '',
+      })),
+    [operationsFlow.steps],
+  )
 
   return (
     <div className="relative mt-16">

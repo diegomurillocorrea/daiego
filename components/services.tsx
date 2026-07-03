@@ -11,6 +11,8 @@ import {
   Workflow,
   Wrench,
 } from 'lucide-react'
+import { useMemo } from 'react'
+import { useDictionary } from '@/components/i18n/locale-provider'
 import {
   AnimatedCard,
   PremiumButton,
@@ -21,33 +23,35 @@ import {
 } from '@/components/motion'
 import { motion } from 'framer-motion'
 
-interface StudioService {
-  title: string
-  icon: LucideIcon
-}
-
-const studioServices: StudioService[] = [
-  { title: 'Custom web platforms', icon: Wrench },
-  { title: 'AI-powered tools', icon: Sparkles },
-  { title: 'Admin dashboards', icon: LayoutDashboard },
-  { title: 'Internal business systems', icon: Boxes },
-  { title: 'Inventory and POS systems', icon: Bot },
-  { title: 'CRM and customer management', icon: Users },
-  { title: 'Workflow automation', icon: Workflow },
-  { title: 'API integrations', icon: Plug },
+const SERVICE_ICONS: LucideIcon[] = [
+  Wrench,
+  Sparkles,
+  LayoutDashboard,
+  Boxes,
+  Bot,
+  Users,
+  Workflow,
+  Plug,
 ]
 
 export function Services() {
+  const { services } = useDictionary()
   const reduceMotion = useMotionSafe()
 
+  const studioServices = useMemo(
+    () =>
+      services.items.map((title, index) => ({
+        title,
+        icon: SERVICE_ICONS[index],
+      })),
+    [services.items],
+  )
+
   return (
-    <section id="studio" className="border-t border-border bg-secondary py-20">
+    <section id="studio" className="border-t border-border py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <RevealHeading
-            title="Build custom software with DAIEGO Studio"
-            subtitle="We design and develop intelligent platforms, internal systems, dashboards and automations for companies that want to operate smarter."
-          />
+          <RevealHeading title={services.title} subtitle={services.subtitle} />
         </div>
 
         <StaggerContainer className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -78,7 +82,7 @@ export function Services() {
         </StaggerContainer>
 
         <div className="mt-12 flex justify-center">
-          <PremiumButton href="#contact">Start a project</PremiumButton>
+          <PremiumButton sectionId="contact">{services.startProject}</PremiumButton>
         </div>
       </div>
     </section>
