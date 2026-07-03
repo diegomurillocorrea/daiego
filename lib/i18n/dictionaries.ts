@@ -20,17 +20,9 @@ export interface Dictionary {
     buildWithDaiego: string
   }
   hero: {
-    eyebrow: string
     titlePrefix: string
     titleHighlight: string
     typedPhrases: string[]
-    tagline: string
-    taglineAccent: string
-    description: string
-    explorePlatform: string
-    buildWithDaiego: string
-    badges: string[]
-    mapLoading: string
   }
   platform: {
     title: string
@@ -179,7 +171,6 @@ const en: Dictionary = {
     buildWithDaiego: 'Build with DAIEGO',
   },
   hero: {
-    eyebrow: 'AI Business Operating System',
     titlePrefix: 'AI-powered',
     titleHighlight: 'business',
     typedPhrases: [
@@ -188,19 +179,6 @@ const en: Dictionary = {
       'automation suite',
       'growth engine',
     ],
-    tagline: 'One platform. Multiple modules.',
-    taglineAccent: 'Connected by AI.',
-    description:
-      'DAIEGO builds modular software, automation tools and intelligent platforms to manage sales, inventory, employees, payments, subscriptions and digital operations.',
-    explorePlatform: 'Explore the platform',
-    buildWithDaiego: 'Build with DAIEGO',
-    badges: [
-      'Sales & inventory',
-      'Employees & payments',
-      'Subscriptions & CRM',
-      'AI automation',
-    ],
-    mapLoading: 'Loading El Salvador map',
   },
   platform: {
     title: 'What DAIEGO Does',
@@ -514,7 +492,6 @@ const es: Dictionary = {
     buildWithDaiego: 'Construir con DAIEGO',
   },
   hero: {
-    eyebrow: 'Sistema operativo de negocios con IA',
     titlePrefix: 'Negocios con',
     titleHighlight: 'IA',
     typedPhrases: [
@@ -523,19 +500,6 @@ const es: Dictionary = {
       'suite de automatización',
       'motor de crecimiento',
     ],
-    tagline: 'Una plataforma. Múltiples módulos.',
-    taglineAccent: 'Conectados por IA.',
-    description:
-      'DAIEGO construye software modular, herramientas de automatización y plataformas inteligentes para gestionar ventas, inventario, empleados, pagos, suscripciones y operaciones digitales.',
-    explorePlatform: 'Explorar la plataforma',
-    buildWithDaiego: 'Construir con DAIEGO',
-    badges: [
-      'Ventas e inventario',
-      'Empleados y pagos',
-      'Suscripciones y CRM',
-      'Automatización con IA',
-    ],
-    mapLoading: 'Cargando mapa de El Salvador',
   },
   platform: {
     title: 'Qué hace DAIEGO',
