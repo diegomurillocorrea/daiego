@@ -1,0 +1,177 @@
+.glass-atmosphere {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(0, 188, 125, 0.18), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 100% 30%, rgba(204, 52, 49, 0.12), transparent 50%),
+    radial-gradient(ellipse 45% 40% at 0% 80%, rgba(0, 188, 125, 0.08), transparent 45%),
+    linear-gradient(165deg, #0a0a0a 0%, #050505 45%, #0c1010 100%);
+}
+
+.glass-surface {
+  --glass-fill: rgba(255, 255, 255, 0.08);
+  --glass-fill-strong: rgba(255, 255, 255, 0.14);
+  --glass-stroke: rgba(255, 255, 255, 0.28);
+  --glass-highlight: rgba(255, 255, 255, 0.55);
+  --glass-shadow: rgba(0, 0, 0, 0.45);
+  --glass-tint: rgba(0, 188, 125, 0.12);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(160deg, var(--glass-fill-strong) 0%, var(--glass-fill) 42%, rgba(255, 255, 255, 0.04) 100%),
+    radial-gradient(120% 90% at 20% 0%, var(--glass-tint), transparent 55%),
+    rgba(18, 22, 22, 0.42);
+  backdrop-filter: blur(22px) saturate(1.35);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  border: 1px solid var(--glass-stroke);
+  box-shadow:
+    0 18px 40px -18px var(--glass-shadow),
+    0 8px 18px -12px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -10px 24px rgba(255, 255, 255, 0.04),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.glass-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.08) 18%,
+    transparent 42%,
+    transparent 68%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  opacity: 0.7;
+  mix-blend-mode: soft-light;
+}
+
+.glass-surface::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 1px;
+  height: 1px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.85),
+    transparent
+  );
+  opacity: 0.65;
+}
+
+.glass-surface-accent {
+  --glass-tint: rgba(204, 52, 49, 0.16);
+}
+
+.glass-surface-primary {
+  --glass-tint: rgba(0, 188, 125, 0.22);
+}
+
+.glass-surface-warm {
+  --glass-tint: rgba(245, 190, 90, 0.18);
+}
+
+.glass-surface-cool {
+  --glass-tint: rgba(90, 160, 255, 0.18);
+}
+
+.glass-surface-active {
+  --glass-fill: rgba(255, 255, 255, 0.16);
+  --glass-fill-strong: rgba(255, 255, 255, 0.24);
+  --glass-stroke: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 20px 44px -16px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 188, 125, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -12px 28px rgba(255, 255, 255, 0.06);
+}
+
+.glass-specular {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--pointer-x, 30%) var(--pointer-y, 20%),
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.05) 28%,
+    transparent 55%
+  );
+  opacity: 0.55;
+  transition: opacity 200ms ease;
+}
+
+.glass-icon {
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.35));
+}
+
+@keyframes glass-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.01);
+  }
+}
+
+.glass-breathe {
+  animation: glass-breathe 5.5s ease-in-out infinite;
+}
+
+.glass-vertical-range {
+  width: 7.5rem;
+  height: 1.25rem;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  background: transparent;
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+
+.glass-vertical-range::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.glass-vertical-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.375rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+}
+
+.glass-vertical-range::-moz-range-track {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.glass-vertical-range::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-breathe {
+    animation: none;
+  }
+}
